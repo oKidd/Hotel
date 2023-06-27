@@ -151,17 +151,10 @@ def reservar(request):
         personas = int(adultos) + int(ninos)
         noches = str(datetime.strptime(fecha_inicio, "%Y-%m-%d").date() - datetime.strptime(fecha_termino, "%Y-%m-%d").date())[1:-14]
         if len(noches) == 0:
-            noches = "1"
-
-        # # Buscar la posición de la palabra "Days"
-        # indice = dias.find("Days")
-
-        # # Si se encuentra la palabra "Days", eliminar desde ese punto hasta el final del string
-        # if indice != -1:
-        #     dias = dias[:indice]
-
-        # habitaciones = Habitacion.objects.filter(personas>=personas, estado="Desocupada")
-        data = {'habitaciones':habitaciones, 'adultos':adultos, 'ninos':ninos, 'fecha_inicio':fecha_inicio, 'fecha_termino':fecha_termino, 'personas':personas, 'noches':noches}
+            noches = 1
+        habitaciones = Habitacion.objects.filter(personas__gte=personas, estado__estado="Desocupada")
+        nh = habitaciones.count()
+        data = {'habitaciones':habitaciones, 'adultos':adultos, 'ninos':ninos, 'fecha_inicio':fecha_inicio, 'fecha_termino':fecha_termino, 'personas':personas, 'noches':noches, 'nh':nh}
         return render(request, 'habitaciones.html', data)
     data = {'form':form}
     return render(request, 'reservar.html', data)

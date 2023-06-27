@@ -83,3 +83,11 @@ class DetalleReserva(models.Model):
 
   id = models.ForeignKey(Reserva, primary_key=True,  null=False, blank=True, on_delete=models.CASCADE)
   precio = models.IntegerField()
+
+
+
+#Agregar una descripcion al modelo Tipo Habitacion
+
+#Agregar un modelo llamado Valores
+#Debe contener:
+#Valor por personas, por nino, por noche
