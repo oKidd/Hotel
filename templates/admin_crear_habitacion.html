@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<script src="{% static 'js/usd.js' %}"></script>
+<form class="row m-4 mt-5 ps-5" method='post'>
+    <div id="der" class="col-8 border border-secondary-subtle rounded">
+        <div class="row m-5">
+        <h1 class="display-1 fs-1">Elige tus Preferencias</h1>
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="col-6">
+            <section class="border border-secondary rounded m-5">
+                <h1 class="fs-4 bg-warning p-2" for="{{ field.auto_id }}">{{ field.label }}</h1>
+                {{ field }}
+            </section>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <div id="izq" class="col-4">
+        <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
+        <h1 class="display-1 fs-1">Crear Habitacion</h1>
+        <div class="bg-white border border-secondary rounded m-5 pt-3 ps-3 pe-3">
+            <h1 class="fs-4">Ítems</h1>
+            <section class="text-start display-1 fs-4 row">
+            <p class="col-6 pt-2 border-top border-secondary-subtle">Ítem 1</p>
+            <p class="col-6 pt-2 border-top border-secondary-subtle">$000.000</p>
+            <p class="col-6 pt-2 border-top border-secondary-subtle">Ítem 2</p>
+            <p class="col-6 pt-2 border-top border-secondary-subtle">$000.000</p>
+            <p class="col-6 pt-2 border-top border-secondary-subtle">Ítem 3</p>
+            <p class="col-6 pt-2 border-top border-secondary-subtle">$000.000</p>
+            <p class="col-6 pt-2 border-top border-secondary fw-bold">Total</p>
+            <p class="col-6 pt-2 border-top border-secondary">$000.000</p>
+            </section>
+        </div>
+        <button type="submit" class="btn btn-warning fs-5 text-decoration-none">Continuar</button>
+        </div>
+    </div>
+</form>
+<p id="DolarO"></p>
+<p id="DolarA"></p>
+<p id="Euro"></p>
+{% endblock %}

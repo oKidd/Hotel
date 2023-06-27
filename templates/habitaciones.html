@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<script src="{% static 'js/fecha.js' %}"></script>
+<form class="row m-4 mt-5 ps-5" method='post'>
+  <div id="der" class="col-8 border border-secondary-subtle rounded">
+    <div class="row m-5">
+      <h1 class="display-1 fs-1">Elige tu habitacion</h1>
+      Adultos: {{ adultos }}
+      <br>Ninos: {{ ninos }}
+      <br>Personas: {{ personas }}
+      <br>Inicio: {{ fecha_inicio }}
+      <br>Termino: {{ fecha_termino }}
+      <br>Noches: {{ noches }}
+      {% for habitacion in habitaciones %}
+        <div class="col-6">
+          <section class="border border-secondary rounded m-5">
+            <h1 class="fs-4 bg-warning p-2" for="{{ habitacion.id }}">{{ habitacion.personas }}</h1>
+            {{ habitacion.descripcion }}
+          </section>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div id="izq" class="col-4">
+    <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
+      <h1 class="display-1 fs-1">Detalle Reserva</h1>
+      <div class="bg-white border border-secondary rounded m-5 pt-3 ps-3 pe-3">
+        <h1 class="fs-4">Ítems</h1>
+        <section class="text-start display-1 fs-4 row">
+          <p class="col-6 pt-2 border-top border-secondary-subtle">Adultos</p>
+          <p class="col-6 pt-2 border-top border-secondary-subtle">{{ adultos }}</p>
+          <p class="col-6 pt-2 border-top border-secondary-subtle">Personas:</p>
+          <p class="col-6 pt-2 border-top border-secondary-subtle">{{ personas }}</p>
+          <p class="col-6 pt-2 border-top border-secondary-subtle">Dias</p>
+          <p class="col-6 pt-2 border-top border-secondary-subtle">{{ dias }}</p>
+          <p class="col-6 pt-2 border-top border-secondary fw-bold">Habitaciones</p>
+          <p class="col-6 pt-2 border-top border-secondary">{{ nh }}</p>
+        </section>
+      </div>
+      <button type="submit" class="btn btn-warning fs-5 text-decoration-none">Continuar</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

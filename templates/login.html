@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="izq" class="col-4 mt-5 mx-auto">
+  <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
+    <h1>Iniciar Sesión</h1>
+    <form class="row m-5" method="post">
+      {% csrf_token %}
+      {{ form.email }}
+      <br>
+      {{ form.password }}
+      <!-- <input type="text" name="username" placeholder="Username" class="col-12 display-1 fs-4 mb-2 border border-secondary rounded">
+      <input type="password" name="password" placeholder="Clave" class="col-12 display-1 fs-4 mb-5 border border-secondary rounded"> -->
+      <button type="submit" class="col-6 btn btn-warning fs-5 text-decoration-none" style="margin:auto;">Iniciar Sesión</button>
+    </form>
+    <a class="fs-5 text-decoration-none text-dark" href="/register">Aun no tienes una cuenta?<br>Registrate</a>
+    {% if error %}
+        <div class="alert alert-danger col-10 mx-auto mt-5" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

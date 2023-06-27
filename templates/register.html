@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<script src="{% static 'js/rut.js' %}"></script>
+<div class="row m-4 mt-5 ps-5">
+  <div id="der" class="col-8 border border-secondary-subtle rounded">
+    <form action="" method="post" class="row m-5">
+        <h1 class="mb-5 display-1 fs-1">Datos Personales</h1>
+        {% csrf_token %}
+        <div class="col-6 ps-5 pe-5">
+          {{ form }}
+        </div>
+        <div class="col-6 ps-5 pe-5">
+          {{ extra }}
+        </div>
+      <button type="submit" class="col-6 btn btn-warning fs-5 text-decoration-none" style="margin:auto;">Registrarse</button>
+    </form>
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+  </div>
+  <div id="izq" class="col-4">
+    <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
+      <p class="fs-5 fw-bold">¿Ya tienes una cuenta?</p>
+      <h1 class="display-1 fs-1">Iniciar Sesión</h1>
+      <form class="row m-5">
+        <input type="email" placeholder="Email" class="col-12 display-1 fs-4 mb-2 border border-secondary rounded">
+        <input type="password" placeholder="Clave" class="col-12 display-1 fs-4 mb-5 border border-secondary rounded">
+        <a href="/pagar" class="col-6 btn btn-warning fs-5 text-decoration-none" style="margin:auto;">Iniciar Sesión</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

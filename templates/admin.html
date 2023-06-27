@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row m-4 mt-5 pe-5">
+  <div id="der" class="col-4">
+    <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
+      <h1 class="mb-5">Panel Admin</h1>
+      <a href="/admin" class="btn btn-warning fs-5 text-decoration-none col-8 mt-5 mb-5">Notificaciones</a>
+      <a href="/admin/reservas" class="btn btn-success fs-5 text-decoration-none col-8 mb-5">Reservas activas</a>
+      <a href="/admin/habitaciones" class="btn btn-primary fs-5 text-decoration-none col-8 mb-5">Habitaciones</a>
+      <a href="/admin/users" class="btn btn-warning fs-5 text-decoration-none col-8 mb-5">Usuarios</a>
+      <a href="/logout" class="btn btn-danger fs-5 text-decoration-none col-8 mb-5">Cerrar Sesion</a>
+    </div>
+  </div>
+  <div id="izq" class="col-8 border border-secondary-subtle rounded">
+    <div class="row m-5">
+      <h1 class="display-1 fs-1">Hola de nuevo {{ request.user.first_name }} {{ request.user.last_name }}!</h1>
+      <h1 class="display-1 fs-3 mb-5">Tienes 0 notificaciones activas.</h1>
+      <p class="display-1 fs-5 mt-5 mb-5">Cuando tengas notificaciones, podras visualizarlas desde aqui.
+      <br>Por el momento estas al dia!</p>
+      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+      </svg>
+    </div>
+  </div>
+</div>
+{% endblock %}
