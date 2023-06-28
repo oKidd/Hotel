@@ -22,24 +22,24 @@
       <table class="mt-1 mb-5 container border border-black table table-striped-columns">
         <tr>
           <th>ID</th>
-          <th>Rut Usuario</th>
           <th>Nombre Usuario</th>
           <th>Habitación</th>
           <th>Fecha</th>
-          <th>Camas</th>
+          <!-- <th>Camas</th> -->
           <th>Total</th>
           <th>Ver Factura</th>
         </tr>
-        <tr>
-          <td>#...</td>
-          <td>...</td>
-          <td>...</td>
-          <td>...</td>
-          <td>../../..</td>
-          <td>...</td>
-          <td>$...</td>
-          <td><a class="btn btn-primary" href="#"></a></td>
-        </tr>
+        {% for reserva in reservas %}
+          <tr>
+            <td>#{{ reserva.id }}</td>
+            <td>{{ reserva.usuario.first_name }} {{ reserva.usuario.last_name }}</td>
+            <td>{{ reserva.habitacion.numero }}</td>
+            <td>{{ reserva.fecha_inicio }}</td>
+            <!-- <td>...</td> -->
+            <td>${{ reserva.total }}</td>
+            <td><a class="btn btn-primary" href="/factura/{{ reserva.id }}"></a></td>
+          </tr>
+        {% endfor %}
       </table>
     </div>
   </div>
