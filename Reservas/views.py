@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -94,7 +95,7 @@ def signout(request):
     logout(request)
     return redirect('/')
 
-def adminpanel(request, subpage=None):
+def adminpanel(request, subpage=None, opt=None):
     if request.user.is_authenticated:
         if request.user.is_staff:
             user_extra = UserExtraInfo.objects.get(user=request.user)
@@ -125,13 +126,27 @@ def adminpanel(request, subpage=None):
                     caracteristicas = request.POST['caracteristicas']
                     estado = EstadoHabitacion.objects.get(estado='Desocupada')
                     habitacion = Habitacion.objects.create(estado=estado, personas=personas, tipo=TipoHabitacion.objects.get(id=tipo), valor=valor, caracteristicas=caracteristicas)
-                    # habitacion
                     return redirect('/admin/habitaciones')
                 data = {'form': form}
                 return render(request, 'admin_crear_habitacion.html', data)
             if subpage == "habitaciones":
-                habitaciones = Habitacion.objects.all()
-                data = {'habitaciones':habitaciones}
+                tipos = TipoHabitacion.objects.all()
+                if request.method == 'POST':
+                    if 'buscar_habitacion' in request.POST:
+                        numero = request.POST['numero']
+                        if numero:
+                            try:
+                                habitacion = Habitacion.objects.get(numero=numero)
+                                habitaciones = []
+                                habitaciones.append(habitacion)
+                                habitaciones.append("yes")
+                            except:
+                                error = "No se ha encontrado esa habitacion..."
+                                data = {'error':error}
+                                return render(request, 'admin_habitaciones.html', data)
+                else:
+                    habitaciones = Habitacion.objects.all()
+                data = {'habitaciones':habitaciones, 'tipos':tipos}
                 return render(request, 'admin_habitaciones.html', data)
             else:
                 return redirect('/admin')
@@ -152,9 +167,11 @@ def reservar(request):
         noches = str(datetime.strptime(fecha_inicio, "%Y-%m-%d").date() - datetime.strptime(fecha_termino, "%Y-%m-%d").date())[1:-14]
         if len(noches) == 0:
             noches = 1
-        habitaciones = Habitacion.objects.filter(personas__gte=personas, estado__estado="Desocupada")
+        habitaciones = Habitacion.objects.filter(Q(personas__gte=personas) & Q(personas__lte=personas + 3) & Q(estado__estado="Desocupada"))
+        otras = Habitacion.objects.filter(personas__gte=personas + 3, estado__estado="Desocupada")
+        otras = [habitacion for habitacion in otras if habitacion not in habitaciones]
         nh = habitaciones.count()
-        data = {'habitaciones':habitaciones, 'adultos':adultos, 'ninos':ninos, 'fecha_inicio':fecha_inicio, 'fecha_termino':fecha_termino, 'personas':personas, 'noches':noches, 'nh':nh}
+        data = {'habitaciones':habitaciones, 'adultos':adultos, 'ninos':ninos, 'fecha_inicio':fecha_inicio, 'fecha_termino':fecha_termino, 'personas':personas, 'noches':noches, 'nh':nh, 'otras':otras}
         return render(request, 'habitaciones.html', data)
     data = {'form':form}
     return render(request, 'reservar.html', data)

@@ -5,45 +5,65 @@
   <div id="der" class="col-4">
     <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
       <h1 class="mb-5">Panel Admin</h1>
-      <a href="/admin" class="btn btn-warning fs-5 text-decoration-none col-8 mt-5 mb-5">Notificaciones</a>
-      <a href="/admin/reservas" class="btn btn-success fs-5 text-decoration-none col-8 mb-5">Reservas activas</a>
-      <a href="/admin/habitaciones" class="btn btn-primary fs-5 text-decoration-none col-8 mb-5">Habitaciones</a>
-      <a href="/admin/users" class="btn btn-warning fs-5 text-decoration-none col-8 mb-5">Usuarios</a>
-      <a href="/logout" class="btn btn-danger fs-5 text-decoration-none col-8 mb-5">Cerrar Sesion</a>
+      {% if error or "yes" in habitaciones %}
+        <a href="/admin/habitaciones" class="btn btn-primary fs-5 text-decoration-none col-8 mb-5">Ver todas</a>
+      {% endif %}
+      <a href="/admin/crear_habitacion" class="btn btn-success fs-5 text-decoration-none col-8 mb-5">Crear Habitacion</a>
+      <a href="/admin" class="btn btn-danger fs-5 text-decoration-none col-8 mb-5">Atras</a>
+      {% if tipos %}
+        <div class="bg-white border border-secondary rounded ms-5 me-5 pt-2 ps-3 pe-2">
+          <h1 class="fs-4">Filtros:</h1>
+          <section class="row">
+            {% for tipo in tipos %}
+              <p class="text-start display-1 fs-5 col-6 pt-2 border-top border-secondary-subtle">{{ tipo.tipo }}</p>
+              <p class="text-end display-1 fs-5 col-6 pt-2 border-top border-secondary-subtle">{{ tipo.id }}</p>
+            {% endfor %}
+          </section>
+        </div>
+      {% endif %}
     </div>
   </div>
   <div id="izq" class="col-8 border border-secondary-subtle rounded">
     <div class="row m-5">
         <h1 class="fs-1 pt-1">Habitaciones</h1>
-        <form class="row mx-auto mb-3">
-            <input class="col-10 rounded" type="text" placeholder="Ingrese ID, Rut o Nombre Cliente">
-            <input class="btn btn-success col-2"type="submit" value="Buscar Reserva">
+        <form class="row mx-auto mb-3" method="post">
+            {% csrf_token %}
+            <input class="col-9 rounded" type="text" name="numero" placeholder="Ingrese Numero Habitacion">
+            <input class="btn btn-success col-3"type="submit" name="buscar_habitacion" value="Buscar Habitacion">
         </form>
-        <table class="mt-1 mb-5 container border border-black table table-striped-columns">
-            <tr>
-                <th>Numero</th>
-                <th>Personas</th>
-                <th>Tipo</th>
-                <th>Estado</th>
-                <th>Valor</th>
-                <th>Factura</th>
-            </tr>
-            {% if habitaciones %}
-                {% for habitacion in habitaciones %}
-                <tr>
-                    <td>#{{ habitacion.numero }}</td>
-                    <td>{{ habitacion.personas }}</td>
-                    <td>{{ habitacion.tipo }}</td>
-                    <td>{{ habitacion.estado }}</td>
-                    <td>${{ habitacion.valor }}</td>
-                    <td><a class="btn btn-primary" href="#"></a></td>
-                </tr>
-                {% endfor %}
-        </table>
+        {% if habitaciones %}
+          <table class="mt-1 mb-5 container border border-black table table-striped-columns">
+              <tr>
+                  <th>Numero</th>
+                  <th>Personas</th>
+                  <th>Tipo</th>
+                  <th>Estado</th>
+                  <th>Valor</th>
+                  <th>Editar</th>
+              </tr>
+              {% for habitacion in habitaciones %}
+                {% if habitacion != "yes" %}
+                  <tr>
+                      <td>#{{ habitacion.numero }}</td>
+                      <td>{{ habitacion.personas }}</td>
+                      <td>{{ habitacion.tipo }}</td> 
+                      <td>{{ habitacion.estado }}</td>
+                      <td>${{ habitacion.valor }}</td>
+                      <td><a class="btn btn-primary" href="/admin/editar_habitacion/{{ habitacion.numero }}"></a></td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+          </table>
         {% else %}
+          {% if error %}
+            <div class="alert alert-danger">
+              <p>{{ error }}</p>
+            </div>
+          {% else %}
             <div class="alert alert-danger">
                 <p>Error, no se han encontrado habitaciones...</p>
             </div>
+          {% endif %}
         {% endif %}
     </div>
   </div>

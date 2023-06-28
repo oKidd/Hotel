@@ -17,16 +17,31 @@
               <h1 class="fs-4 bg-warning p-2">Habitacion {{ habitacion.numero }}</h1>
               <p class="text-start fs-5 ms-3">Tipo: {{ habitacion.tipo }}</p>
               <p class="text-start fs-5 ms-3">Personas: {{ habitacion.personas }}</p>
-              <p class="text-start fs-5 ms-3">Valor: ${{ habitacion.valor }}</p>
+              <p class="text-start fs-5 ms-3">Valor por Noche: ${{ habitacion.valor }}</p>
             </section>
           </a>
         {% endfor %}
       {% else %}
-        <h1>No se han encontrado habitaciones acorde a tu preferencia...</h1>
+        <h1 class="mt-5 fs-3">No se han encontrado habitaciones acorde a tu preferencia...</h1>
+      {% endif %}
+      {% if otras %}
+        <h1 class="mt-5 display-1 fs-1">Otras opciones...</h1>
+        {% for habitacion in otras %}
+          <a href="/reservar/{{ habitacion.numero }}" class="col-12 text-decoration-none text-dark">
+            <section class="border border-secondary rounded m-2">
+              <h1 class="fs-4 bg-warning p-2">Habitacion {{ habitacion.numero }}</h1>
+              <p class="text-start fs-5 ms-3">Tipo: {{ habitacion.tipo }}</p>
+              <p class="text-start fs-5 ms-3">Personas: {{ habitacion.personas }}</p>
+              <p class="text-start fs-5 ms-3">Valor por Noche: ${{ habitacion.valor }}</p>
+            </section>
+          </a>
+        {% endfor %}
+      {% else %}
+      <h1 class="mt-5 fs-5">Actualmente no tenemos mas opciones disponibles...</h1>
       {% endif %}
     </div>
   </div>
-  <div id="izq" class="col-4">
+  <div id="izq" class="col-4 position-fixed top-1 end-0">
     <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
       <h1 class="display-1 fs-1">Detalle Reserva</h1>
       <div class="bg-white border border-secondary rounded m-5 pt-3 ps-3 pe-3">

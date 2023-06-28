@@ -40,7 +40,7 @@ class CrearHabitacion(forms.Form):
     personas = forms.IntegerField(widget=forms.NumberInput(attrs={"class": "w-100 text-center fs-4 display-1 mb-2", "style" : "border: none; outline: none;"}))
     tipo = forms.ModelChoiceField(widget=forms.Select(attrs={"class": "w-100 text-center fs-4 display-1 mb-2", "style" : "border: none; outline: none;"}), queryset=TipoHabitacion.objects.all())
     #.values_list('tipo', flat=True)
-    valor = forms.IntegerField(widget=forms.NumberInput(attrs={"class": "w-100 text-center fs-4 display-1 mb-2", "style" : "border: none; outline: none;"}))
+    valor = forms.IntegerField(widget=forms.NumberInput(attrs={"class": "w-100 text-center fs-4 display-1 mb-2", "style" : "border: none; outline: none;"}), label="Valor (CLP)")
     caracteristicas = forms.CharField(max_length=200, widget=forms.Textarea(attrs={"rows": "1", "class": "w-100 text-center fs-4 display-1 mb-1", "style" : "border: none; outline: none;"}))
 
 class ReservaForm(forms.ModelForm):
