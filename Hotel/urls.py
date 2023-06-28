@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Reservas.views import UserLogin, UserRegister, user, home, signout, adminpanel, reservar, habitaciones
+from Reservas.views import UserLogin, UserRegister, user, home, signout, adminpanel, reservar, habitaciones, editar_habitacion
 
 urlpatterns = [
     path('djangoadmin/', admin.site.urls),
@@ -26,6 +26,8 @@ urlpatterns = [
     path('logout/', signout),
     path('admin/', adminpanel),
     path('admin/<slug:subpage>/', adminpanel),
+    path('editar_habitacion/', editar_habitacion),
+    path('editar_habitacion/<int:numero>/', editar_habitacion),
     path('reservar/', reservar),
     path('habitaciones/', habitaciones)
 ]

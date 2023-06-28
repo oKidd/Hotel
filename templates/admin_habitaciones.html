@@ -44,12 +44,12 @@
               {% for habitacion in habitaciones %}
                 {% if habitacion != "yes" %}
                   <tr>
-                      <td>#{{ habitacion.numero }}</td>
+                      <td>{{ habitacion.numero }}</td>
                       <td>{{ habitacion.personas }}</td>
                       <td>{{ habitacion.tipo }}</td> 
                       <td>{{ habitacion.estado }}</td>
                       <td>${{ habitacion.valor }}</td>
-                      <td><a class="btn btn-primary" href="/admin/editar_habitacion/{{ habitacion.numero }}"></a></td>
+                      <td><a class="btn btn-primary" href="/editar_habitacion/{{ habitacion.numero }}"></a></td>
                   </tr>
                 {% endif %}
               {% endfor %}

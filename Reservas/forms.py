@@ -32,7 +32,7 @@ class UserRegisterExtraForm(forms.ModelForm):
     nacimiento = forms.DateField(widget=forms.DateInput(attrs={"class": "col-12 display-1 fs-4 mb-4 border border-secondary rounded", "type": "date", "placholder": "Fecha de Nacimiento"}), label="")
     telefono = forms.IntegerField(widget=forms.TextInput(attrs={"class": "col-12 display-1 fs-4 mb-4 border border-secondary rounded", "placeholder": "Telefono"}), label="")
 
-class CrearHabitacion(forms.Form):
+class CrearHabitacion(forms.ModelForm):
     class Meta:
         model = Habitacion
         fields = ('personas', 'tipo', 'valor', 'caracteristicas')

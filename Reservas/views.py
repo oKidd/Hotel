@@ -95,7 +95,7 @@ def signout(request):
     logout(request)
     return redirect('/')
 
-def adminpanel(request, subpage=None, opt=None):
+def adminpanel(request, subpage=None):
     if request.user.is_authenticated:
         if request.user.is_staff:
             user_extra = UserExtraInfo.objects.get(user=request.user)
@@ -126,7 +126,8 @@ def adminpanel(request, subpage=None, opt=None):
                     caracteristicas = request.POST['caracteristicas']
                     estado = EstadoHabitacion.objects.get(estado='Desocupada')
                     habitacion = Habitacion.objects.create(estado=estado, personas=personas, tipo=TipoHabitacion.objects.get(id=tipo), valor=valor, caracteristicas=caracteristicas)
-                    return redirect('/admin/habitaciones')
+                    url = '/editar_habitacion/'+str(habitacion.numero)
+                    return redirect(url)
                 data = {'form': form}
                 return render(request, 'admin_crear_habitacion.html', data)
             if subpage == "habitaciones":
@@ -154,6 +155,26 @@ def adminpanel(request, subpage=None, opt=None):
             return redirect('/user')
     else:
         return redirect('/login')
+    
+def editar_habitacion(request, numero=None):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            if numero is None:
+                return redirect('/admin/habitaciones')
+            else:
+                try:
+                    habitacion = Habitacion.objects.get(numero=numero)
+                    form = CrearHabitacion(instance=habitacion)
+                    data = {'habitacion':habitacion, 'form':form}
+                    return render(request, 'admin_editar_habitacion.html', data)
+                except:
+                    data = {'error':"La habitacion ingresada no existe..."}
+                    return render(request, 'admin_habitaciones.html', data)
+        else:
+            return redirect('/user')
+    else:
+        return redirect('/login')
+            
 
 def reservar(request):
     form = ReservaForm()
