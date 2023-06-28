@@ -10,7 +10,7 @@ class UserExtraInfo(models.Model):
 
   user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
   pais = models.CharField(max_length=50, null=True)
-  rut = models.CharField(max_length=9, null=True)
+  rut = models.CharField(max_length=10, null=True)
   nacimiento = models.DateField(null=True)
   telefono = models.CharField(max_length=30, default="", null=True)
 
@@ -86,6 +86,8 @@ class Reserva(models.Model):
   neto = models.IntegerField()
   iva = models.IntegerField()
   total = models.IntegerField()
+  # fecha_pago = models.DateField()
+  # hora_pago = models.TimeField()
   fecha_inicio = models.DateField()
   fecha_termino = models.DateField()
 

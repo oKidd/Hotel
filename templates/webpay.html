@@ -26,7 +26,15 @@
     </div>
   </header>
   <main class="col-10 mx-auto">
-    <div class="row border border-2 border-secondary border-opacity-25 rounded-4 ms-5 me-5 shadow p-5">
+    <form method="post" class="row border border-2 border-secondary border-opacity-25 rounded-4 ms-5 me-5 shadow p-5">
+      {% csrf_token %}
+      <input type="hidden" name="numero" value="{{ habitacion.numero }}">
+      <input type="hidden" name="adultos" value="{{ adultos }}">
+      <input type="hidden" name="ninos" value="{{ ninos }}">
+      <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+      <input type="hidden" name="fecha_termino" value="{{ fecha_termino }}">
+      <input type="hidden" name="personas" value="{{ personas }}">
+      <input type="hidden" name="noches" value="{{ noches }}">
       <section id="der" class="col-5 ms-5 mt-5 row">
         <div class="col-6">
           <p class="fw-bold">Estas pagando en:</p>
@@ -34,7 +42,7 @@
         </div>
         <div class="col-6 text-end">
           <p class="fw-bold">Monto a pagar:</p>
-          <h1 class="fs-1 display-1 fw-bold">$00.000</h1>
+          <h1 class="fs-1 display-1 fw-bold">${{ total }}</h1>
         </div>
         <a href="#detalle" class="text-decoration-none col-12 text-primary">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle float-start m-1 me-3" viewBox="0 0 16 16">
@@ -99,9 +107,9 @@
           </svg>
           <input id="card" type="text" placeholder="XXXX XXXX XXXX XXXX" class="border border-0 p-3" style="outline: none;">
         </label>
-        <a href="#pagar" class="btn btn-primary fs-5 col-12 p-3 mt-4" style="background-color: #6a186b !important; border-color: #6a186b !important;">Pagar</a>
+        <button type="submit" name="pagar_reserva" class="btn btn-primary fs-5 col-12 p-3 mt-4" style="background-color: #6a186b !important; border-color: #6a186b !important;">Pagar</a>
       </section>
-    </div>
+    </form>
   </main>
 
 

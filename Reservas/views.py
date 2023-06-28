@@ -35,18 +35,19 @@ def UserRegister(request):
                 data = {'error': error, 'form':form, 'extra':extra}
                 return render(request, 'register.html', data)
             except:
-                try:
-                    user = User.objects.create_user(username=username,first_name=first_name, last_name=last_name, email=email, password=password1)
-                    user.save()
-                    user_extra = UserExtraInfo(user=user, pais=pais, rut=rut, nacimiento=nacimiento, telefono=telefono)
-                    user_extra.save()
-                    login(request, user)
-                    return redirect('/user')
-                except:
-                    error = "El usuario ya existe..."
-                    data = {'error': error, 'form':form, 'extra':extra}
-                    return render(request, 'register.html', data)
-        else:
+                user = User.objects.create_user(username=username,first_name=first_name, last_name=last_name, email=email, password=password1)
+                user.save()
+                user_extra = UserExtraInfo(user=user, pais=pais, rut=rut, nacimiento=nacimiento, telefono=telefono)
+                user_extra.save()
+                login(request, user)
+                return redirect('/user')
+        #         try:
+                    
+        #         except:
+        #             error = "El usuario ya existe..."
+        #             data = {'error': error, 'form':form, 'extra':extra}
+        #             return render(request, 'register.html', data)
+        # else:
             error = "Las claves no coinciden..."
             data = {'error': error, 'form':form}
     return render(request, 'register.html', data)
@@ -231,25 +232,27 @@ def crear_cama(request, numero=None):
             if numero is None:
                 return redirect('/admin/habitaciones')
             else:
-                habitacion = Habitacion.objects.get(numero=numero)
-                if request.method == 'POST':
-                    tipo = TipoCama.objects.get(id=request.POST['tipo'])
-                    cantidad = int(request.POST['cantidad'])
-                    cama = Cama.objects.create(habitacion=habitacion, tipo=tipo, cantidad=cantidad)
-                    url = '/editar_habitacion/'+str(habitacion.numero)
-                    return redirect(url)
-                form = CrearCama()
-                data = {'habitacion':habitacion, 'form':form}
-                return render(request, 'admin_crear_cama.html', data)
-                # try:
-                    
-                # except:
-                #     data = {'error':"La habitacion ingresada no existe..."}
-                #     return render(request, 'admin_habitaciones.html', data)
+                try:
+                    habitacion = Habitacion.objects.get(numero=numero)
+                    if request.method == 'POST':
+                        tipo = TipoCama.objects.get(id=request.POST['tipo'])
+                        cantidad = int(request.POST['cantidad'])
+                        cama = Cama.objects.create(habitacion=habitacion, tipo=tipo, cantidad=cantidad)
+                        url = '/editar_habitacion/'+str(habitacion.numero)
+                        return redirect(url)
+                    form = CrearCama()
+                    data = {'habitacion':habitacion, 'form':form}
+                    return render(request, 'admin_crear_cama.html', data)
+                except:
+                    data = {'error':"La habitacion ingresada no existe..."}
+                    return render(request, 'admin_habitaciones.html', data)
                 
 def reservar(request, numero=None):
     if numero != None:
-        return render(request, '')
+        habitacion = Habitacion.objects.get(numero=numero)
+        camas = Cama.objects.filter(habitacion=habitacion)
+        data = {'habitacion':habitacion, 'camas':camas}
+        return render(request, 'crear_reserva.html', data)
     form = ReservaForm()
     if request.method == 'POST':
         adultos = request.POST['adultos']
@@ -261,6 +264,41 @@ def reservar(request, numero=None):
         noches = str(datetime.strptime(fecha_inicio, "%Y-%m-%d").date() - datetime.strptime(fecha_termino, "%Y-%m-%d").date())[1:-14]
         if len(noches) == 0:
             noches = 1
+        if 'ver_factura' in request.POST:
+            habitacion = Habitacion.objects.get(numero=request.POST['numero'])
+            camas = Cama.objects.filter(habitacion=habitacion)
+            neto = int(habitacion.valor) * int(noches)
+            hora_actual = datetime.now().strftime('%H:%M')
+            fecha_actual = datetime.now().strftime('%d/%m/%Y')
+            iva = neto * 0.19
+            total = neto + iva
+            reserva = Reserva.objects.create(usuario=request.user, habitacion=habitacion, adultos=adultos, ninos=ninos, neto=neto, iva=iva, total=total, fecha_inicio=fecha_inicio, fecha_termino=fecha_termino)
+            data = {'habitacion':habitacion,'hora':hora_actual,'fecha':fecha_actual, 'camas':camas, 'total':total, 'adultos':adultos, 'ninos':ninos, 'fecha_inicio':fecha_inicio, 'fecha_termino':fecha_termino, 'personas':personas, 'noches':noches}
+            url = '/factura/'+reserva.id
+            return redirect(url)
+        if 'pagar_reserva' in request.POST:
+            habitacion = Habitacion.objects.get(numero=request.POST['numero'])
+            camas = Cama.objects.filter(habitacion=habitacion)
+            total = int(habitacion.valor) * int(noches)
+            hora_actual = datetime.now().strftime('%H:%M')
+            fecha_actual = datetime.now().strftime('%d/%m/%Y')
+            data = {'habitacion':habitacion,'hora':hora_actual,'fecha':fecha_actual, 'camas':camas, 'total':total, 'adultos':adultos, 'ninos':ninos, 'fecha_inicio':fecha_inicio, 'fecha_termino':fecha_termino, 'personas':personas, 'noches':noches}
+            return render(request, 'webpay_success.html', data)
+        if 'crear_reserva' in request.POST:
+            habitacion = Habitacion.objects.get(numero=request.POST['numero'])
+            camas = Cama.objects.filter(habitacion=habitacion)
+            total = int(habitacion.valor) * int(noches)
+            data = {'habitacion':habitacion, 'camas':camas, 'total':total, 'adultos':adultos, 'ninos':ninos, 'fecha_inicio':fecha_inicio, 'fecha_termino':fecha_termino, 'personas':personas, 'noches':noches}
+            return render(request, 'webpay.html', data)
+        if 'reservar_habitacion' in request.POST:
+            if request.user.is_authenticated:
+                habitacion = Habitacion.objects.get(numero=request.POST['reservar_habitacion'])
+                camas = Cama.objects.filter(habitacion=habitacion)
+                total = int(habitacion.valor) * int(noches)
+                data = {'habitacion':habitacion, 'camas':camas, 'total':total, 'adultos':adultos, 'ninos':ninos, 'fecha_inicio':fecha_inicio, 'fecha_termino':fecha_termino, 'personas':personas, 'noches':noches}
+                return render(request, 'crear_reserva.html', data)
+            else:
+                return redirect('/register')
         habitaciones = Habitacion.objects.filter(Q(personas__gte=personas) & Q(personas__lte=personas + 3) & Q(estado__estado="Desocupada"))
         otras = Habitacion.objects.filter(personas__gte=personas + 3, estado__estado="Desocupada")
         otras = [habitacion for habitacion in otras if habitacion not in habitaciones]
@@ -269,6 +307,13 @@ def reservar(request, numero=None):
         return render(request, 'habitaciones.html', data)
     data = {'form':form}
     return render(request, 'reservar.html', data)
+
+def factura(request, id=None):
+    if id != None:
+        reserva = Reserva.objects.get(id=id)
+        extra_user = UserExtraInfo.objects.get(user=reserva.usuario)
+        data = {'reserva':reserva, 'extra_user':extra_user}
+        return render(request, 'factura.html', data)
 
 def habitaciones(request):
     try:
@@ -284,3 +329,8 @@ def habitaciones(request):
         return render(request, 'habitaciones.html', data)
     except:
         return redirect('/reservar')
+    
+
+
+    # recuerda agregar el template de login/register despues de que el usuario elige sus especificaciones
+    # 

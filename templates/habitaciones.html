@@ -4,12 +4,19 @@
 {% load static %}
 <script src="{% static 'js/fecha.js' %}"></script>
 <form class="row m-4 mt-5 ps-5" method='post'>
+  {% csrf_token %}
+  <input type="hidden" name="adultos" value="{{ adultos }}">
+  <input type="hidden" name="ninos" value="{{ ninos }}">
+  <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
+  <input type="hidden" name="fecha_termino" value="{{ fecha_termino }}">
+  <input type="hidden" name="personas" value="{{ personas }}">
+  <input type="hidden" name="noches" value="{{ noches }}">
   <div id="der" class="col-8 border border-secondary-subtle rounded">
     <div class="row m-5">
       <h1 class="display-1 fs-1">Elige tu habitacion</h1>
       {% if habitaciones %}
         {% for habitacion in habitaciones %}
-          <a href="/reservar/{{ habitacion.numero }}" class="col-12 text-decoration-none text-dark">
+          <button type="submit" name="reservar_habitacion" value="{{ habitacion.numero }}" class="col-12 text-decoration-none text-dark border-0 bg-white">
             <section class="border border-secondary rounded m-2">
               <h1 class="fs-4 bg-warning p-2">Habitacion {{ habitacion.numero }}</h1>
               <p class="text-start fs-5 ms-3">Tipo: {{ habitacion.tipo }}</p>
@@ -24,7 +31,7 @@
       {% if otras %}
         <h1 class="mt-5 display-1 fs-1">Otras opciones...</h1>
         {% for habitacion in otras %}
-          <a href="/reservar/{{ habitacion.numero }}" class="col-12 text-decoration-none text-dark">
+        <button type="submit" name="reservar_habitacion" value="{{ habitacion.numero }}" class="col-12 text-decoration-none text-dark border-0 bg-white">
             <section class="border border-secondary rounded m-2">
               <h1 class="fs-4 bg-warning p-2">Habitacion {{ habitacion.numero }}</h1>
               <p class="text-start fs-5 ms-3">Tipo: {{ habitacion.tipo }}</p>
