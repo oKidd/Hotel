@@ -50,16 +50,28 @@ class Habitacion(models.Model):
 
   def __str__(self):
       return f'Habitacion {self.numero}'
+  
+class TipoCama(models.Model):
+  class Meta:
+      verbose_name_plural = "Tipos Cama"
+      verbose_name = "Tipo"
+
+  id = models.AutoField(primary_key=True)
+  tipo = models.CharField(max_length=50)
+  descripcion = models.TextField()
+
+  def __str__(self):
+      return f'{self.tipo}'
 
 class Cama(models.Model):
   class Meta:
       verbose_name_plural = "Camas Habitacion"
       verbose_name = "Cama"
 
+  id = models.AutoField(primary_key=True)
   habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE)
-  tipo = models.CharField(max_length=50)
-  descripcion = models.TextField()
-  
+  tipo = models.ForeignKey(TipoCama, on_delete=models.CASCADE)
+  cantidad = models.IntegerField(default=0)
 
 class Reserva(models.Model):
   class Meta:
@@ -83,11 +95,3 @@ class DetalleReserva(models.Model):
 
   id = models.ForeignKey(Reserva, primary_key=True,  null=False, blank=True, on_delete=models.CASCADE)
   precio = models.IntegerField()
-
-
-
-#Agregar una descripcion al modelo Tipo Habitacion
-
-#Agregar un modelo llamado Valores
-#Debe contener:
-#Valor por personas, por nino, por noche

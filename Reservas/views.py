@@ -3,10 +3,10 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from Reservas.models import UserExtraInfo, Habitacion, TipoHabitacion, EstadoHabitacion
+from Reservas.models import UserExtraInfo, Habitacion, TipoHabitacion, EstadoHabitacion, Cama, TipoCama, Reserva
 from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponse
-from Reservas.forms import UserRegisterForm, UserLoginForm, UserRegisterExtraForm, CrearHabitacion, ReservaForm
+from Reservas.forms import UserRegisterForm, UserLoginForm, UserRegisterExtraForm, CrearHabitacion, ReservaForm, CrearCama, CrearTipoCama
 
 
 # Create your views here.
@@ -103,6 +103,9 @@ def adminpanel(request, subpage=None):
             if subpage is None:
                 return render(request, 'admin.html', data)
             if subpage == "users":
+                users = User.objects.all()
+                extra_users = UserExtraInfo.objects.all()
+                data = {'users':users, 'extra_users':extra_users}
                 return render(request, 'admin_users.html', data)
             if subpage == "crear_habitacion":
                 tipos = ['Clasica', 'Superior', "Suite Junior", "Suite Presidencial"]
@@ -149,8 +152,42 @@ def adminpanel(request, subpage=None):
                     habitaciones = Habitacion.objects.all()
                 data = {'habitaciones':habitaciones, 'tipos':tipos}
                 return render(request, 'admin_habitaciones.html', data)
+            if subpage == "camas":
+                tipos = TipoCama.objects.all()
+                data = {'tipos':tipos}
+                return render(request, 'admin_camas.html', data)
+            if subpage == "reservas":
+                reservas = Reserva.objects.all()
+                data = {'reservas':reservas}
+                return render(request, 'admin_reservas.html', data)
             else:
                 return redirect('/admin')
+        else:
+            return redirect('/user')
+    else:
+        return redirect('/login')
+    
+def crear_tipo_cama(request, id=None):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            form = CrearTipoCama()
+            if id != None:
+                tipo = TipoCama.objects.get(id=id)
+                form = CrearTipoCama(instance=tipo)
+                data = {'form':form, 'tipo':tipo}
+                if request.method == 'POST':
+                    form = CrearTipoCama(request.POST, instance=tipo)
+                    if form.is_valid():
+                        form.save()
+                        return redirect('/admin/camas')
+                return render(request, 'admin_crear_tipo_cama.html', data) 
+            data = {'form':form}
+            if request.method == 'POST':
+                nombre = request.POST['tipo']
+                descripcion = request.POST['descripcion']
+                tipo = TipoCama.objects.create(tipo=nombre, descripcion=descripcion)
+                return redirect('/admin/camas')
+            return render(request, 'admin_crear_tipo_cama.html', data)
         else:
             return redirect('/user')
     else:
@@ -164,8 +201,21 @@ def editar_habitacion(request, numero=None):
             else:
                 try:
                     habitacion = Habitacion.objects.get(numero=numero)
+                    camas = Cama.objects.filter(habitacion=habitacion)
+                    # camas_por_tipo = {}
+                    # # Agrupar las camas por tipo
+                    # for cama in camas:
+                    #     tipo = cama.tipo
+                    #     if tipo in camas_por_tipo:
+                    #         camas_por_tipo[tipo].append(cama)
+                    #     else:
+                    #         camas_por_tipo[tipo] = [cama]
                     form = CrearHabitacion(instance=habitacion)
-                    data = {'habitacion':habitacion, 'form':form}
+                    if request.method == 'POST':
+                        form = CrearHabitacion(request.POST, instance=habitacion)
+                        if form.is_valid():
+                            form.save()
+                    data = {'habitacion':habitacion, 'form':form, 'camas':camas}
                     return render(request, 'admin_editar_habitacion.html', data)
                 except:
                     data = {'error':"La habitacion ingresada no existe..."}
@@ -175,8 +225,31 @@ def editar_habitacion(request, numero=None):
     else:
         return redirect('/login')
             
-
-def reservar(request):
+def crear_cama(request, numero=None):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            if numero is None:
+                return redirect('/admin/habitaciones')
+            else:
+                habitacion = Habitacion.objects.get(numero=numero)
+                if request.method == 'POST':
+                    tipo = TipoCama.objects.get(id=request.POST['tipo'])
+                    cantidad = int(request.POST['cantidad'])
+                    cama = Cama.objects.create(habitacion=habitacion, tipo=tipo, cantidad=cantidad)
+                    url = '/editar_habitacion/'+str(habitacion.numero)
+                    return redirect(url)
+                form = CrearCama()
+                data = {'habitacion':habitacion, 'form':form}
+                return render(request, 'admin_crear_cama.html', data)
+                # try:
+                    
+                # except:
+                #     data = {'error':"La habitacion ingresada no existe..."}
+                #     return render(request, 'admin_habitaciones.html', data)
+                
+def reservar(request, numero=None):
+    if numero != None:
+        return render(request, '')
     form = ReservaForm()
     if request.method == 'POST':
         adultos = request.POST['adultos']

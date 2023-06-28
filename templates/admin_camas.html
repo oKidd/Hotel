@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row m-4 mt-5 pe-5">
+  <div id="der" class="col-4">
+    <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
+      <h1 class="mb-5">Panel Admin</h1>
+      {% if error or "yes" in tipos %}
+        <a href="/admin/camas" class="btn btn-primary fs-5 text-decoration-none col-8 mb-5">Ver todas</a>
+      {% endif %}
+      <a href="/crear_tipo_cama" class="btn btn-success fs-5 text-decoration-none col-8 mb-5">Crear Tipo Cama</a>
+      <a href="/admin" class="btn btn-danger fs-5 text-decoration-none col-8 mb-5">Atras</a>
+    </div>
+  </div>
+  <div id="izq" class="col-8 border border-secondary-subtle rounded">
+    <div class="row m-5">
+        <h1 class="fs-1 pt-1">Tipos de Camas</h1>
+        <!-- <form class="row mx-auto mb-3" method="post">
+            {% csrf_token %}
+            <input class="col-9 rounded" type="text" name="numero" placeholder="Ingrese Numero Habitacion">
+            <input class="btn btn-success col-3"type="submit" name="buscar_habitacion" value="Buscar Tipo Cama">
+        </form> -->
+        {% if tipos %}
+          <table class="mt-1 mb-5 container border border-black table table-striped-columns">
+              <tr>
+                  <th>Tipo</th>
+                  <th>Descripcion</th>
+                  <th>Editar</th>
+              </tr>
+              {% for tipo in tipos %}
+                {% if tipo != "yes" %}
+                  <tr>
+                      <td>{{ tipo.tipo }}</td>
+                      <td>{{ tipo.descripcion }}</td>
+                      <td><a class="btn btn-primary" href="/crear_tipo_cama/{{ tipo.id }}"></a></td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+          </table>
+        {% else %}
+          {% if error %}
+            <div class="alert alert-danger">
+              <p>{{ error }}</p>
+            </div>
+          {% else %}
+            <div class="alert alert-danger">
+                <p>Error, no se han encontrado tipos de camas...</p>
+            </div>
+          {% endif %}
+        {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

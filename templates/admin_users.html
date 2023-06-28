@@ -13,32 +13,29 @@
   </div>
   <div id="izq" class="col-8 border border-secondary-subtle rounded">
     <div class="row m-5">
-      <h1 class="fs-1 pt-1">Reservas de Hoy (...)</h1>
-      <form class="row">
-        <input class="col-4 form-control" type="text" placeholder="Ingrese ID, Rut o Nombre Cliente">
-        <a class="btn btn-success col-2" href="#">Buscar Reserva</a>
+      <h1 class="fs-1 pt-1">Usuarios Registrados</h1>
+      <form class="row mx-auto mb-3" method="post">
+        {% csrf_token %}
+        <input class="col-9 rounded" type="text" name="numero" placeholder="Ingrese Nombre Usuario">
+        <input class="btn btn-success col-3"type="submit" name="buscar_usuario" value="Buscar Usuario">
       </form>
       <table class="mt-1 mb-5 container border border-black table table-striped-columns">
         <tr>
           <th>ID</th>
-          <th>Rut Usuario</th>
+          <!-- <th>Rut Usuario</th> -->
           <th>Nombre Usuario</th>
-          <th>Habitación</th>
-          <th>Fecha</th>
-          <th>Camas</th>
-          <th>Total</th>
-          <th>Ver Factura</th>
+          <th>Email</th>
+          <th>Editar</th>
         </tr>
-        <tr>
-          <td>#...</td>
-          <td>...</td>
-          <td>...</td>
-          <td>...</td>
-          <td>../../..</td>
-          <td>...</td>
-          <td>$...</td>
-          <td><a class="btn btn-primary" href="#"></a></td>
-        </tr>
+        {% for user in users%}
+          <tr>
+            <td>{{ user.id }}</td>
+            <!-- <td> user.rut </td> -->
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+            <td>{{ user.email }}</td>
+            <td><a class="btn btn-primary" href="#"></a></td>
+          </tr>
+        {% endfor %}
       </table>
     </div>
   </div>

@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% load static %}
-<script src="{% static 'js/usd.js' %}"></script>
 <form class="row m-4 mt-5 ps-5" method='post'>
     <div id="der" class="col-8 border border-secondary-subtle rounded">
         <div class="row m-5">
-            <h1 class="display-1 fs-1">Editar Informacion Habitacion {{ habitacion.numero }}</h1>
+            <h1 class="display-1 fs-1">Editar Informacion <span class="fw-semibold">Habitacion {{ habitacion.numero }}</span></h1>
             {% csrf_token %}
             {% for field in form %}
             <div class="col-6">
@@ -18,26 +16,26 @@
             {% endfor %}
             <a href="/admin/habitaciones/" class="btn col-3 btn-danger fs-5 text-decoration-none">Volver</a>
             <div class="col-6"></div>
-            <button type="submit" class="btn col-3 btn-warning fs-5 text-decoration-none">Continuar</button>
+            <button type="submit" class="btn col-3 btn-warning fs-5 text-decoration-none">Guardar</button>
         </div>
     </div>
     <div id="der" class="col-4">
         <div class="bg-warning bg-opacity-25 rounded ms-5 me-5 pt-5 pb-5">
-            <h1 class="mb-5 fs-1 display-1">Camas</h1>
+            <h1 class="mb-5 fs-1 display-1">Editar Camas</h1>
             <div class="bg-white border border-secondary rounded m-5 pt-3 ps-3 pe-3">
-                <h1 class="fs-4">Valores Aproximados</h1>
-                <section class="text-start display-1 fs-5 row">
-                    <p class="col-6 pt-2 border-top border-secondary-subtle">{{ adultos }} Adulto(s):</p>
-                    <p class="col-6 pt-2 border-top border-secondary-subtle">$Aprox</p>
-                    <p class="col-6 pt-2 border-top border-secondary-subtle">{{ninos}} Nino(s):</p>
-                    <p class="col-6 pt-2 border-top border-secondary-subtle">$Aprox</p>
-                    <p class="col-6 pt-2 border-top border-secondary-subtle">{{ noches }} Noche(s):</p>
-                    <p class="col-6 pt-2 border-top border-secondary-subtle">$Aprox</p>
-                    <p class="col-6 pt-2 border-top border-secondary fw-bold">Total:</p>
-                    <p class="col-6 pt-2 border-top border-secondary">$Aprox</p>
+                <h1 class="fs-4">Camas Asociadas</h1>
+                <section class="display-1 fs-5 row">
+                {% if camas %}
+                    {% for cama in camas %}
+                        <p class="col-6 pt-2 text-start border-top border-secondary-subtle">{{ cama.tipo }}:</p>
+                        <p class="col-6 pt-2 text-end border-top border-secondary-subtle">{{ cama.cantidad }}</p>
+                    {% endfor %}
+                {% else %}
+                    <p class="col-12 pt-2 text-center border-top border-secondary-subtle">No hay camas asociadas a esta habitacion...</p>
+                {% endif %}
                 </section>
             </div>
-            <a href="/agregar_camas/{{ habitacion.numero }}" class="btn col-3 btn-warning fs-5 text-decoration-none">Continuar</button>
+            <a href="/crear_cama/{{ habitacion.numero }}" class="btn btn-warning fs-5 text-decoration-none">Agregar Camas</a>
         </div>
     </div>
 </form>

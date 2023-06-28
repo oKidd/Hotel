@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from Reservas.models import UserExtraInfo, Reserva, TipoHabitacion, Habitacion
+from Reservas.models import UserExtraInfo, Reserva, TipoHabitacion, Habitacion, Cama, TipoCama
 
 
 class UserRegisterForm(UserCreationForm):
@@ -42,6 +42,22 @@ class CrearHabitacion(forms.ModelForm):
     #.values_list('tipo', flat=True)
     valor = forms.IntegerField(widget=forms.NumberInput(attrs={"class": "w-100 text-center fs-4 display-1 mb-2", "style" : "border: none; outline: none;"}), label="Valor (CLP)")
     caracteristicas = forms.CharField(max_length=200, widget=forms.Textarea(attrs={"rows": "1", "class": "w-100 text-center fs-4 display-1 mb-1", "style" : "border: none; outline: none;"}))
+
+class CrearCama(forms.ModelForm):
+    class Meta:
+        model = Cama
+        fields = ('tipo', 'cantidad')
+    
+    tipo = forms.ModelChoiceField(widget=forms.Select(attrs={"class": "w-100 text-center fs-4 display-1 mb-2", "style" : "border: none; outline: none;"}), queryset=TipoCama.objects.all())
+    cantidad = forms.IntegerField(widget=forms.NumberInput(attrs={"class": "w-100 text-center fs-4 display-1 mb-1", "style" : "border: none; outline: none;"}))
+
+class CrearTipoCama(forms.ModelForm):
+    class Meta:
+        model = TipoCama
+        fields = ('tipo', 'descripcion')
+    
+    tipo = forms.CharField(widget=forms.TextInput(attrs={"class": "w-100 text-center fs-4 display-1 mb-2", "style" : "border: none; outline: none;"}), label="Nombre Tipo")
+    descripcion = forms.CharField(max_length=200, widget=forms.Textarea(attrs={"rows": "1", "class": "w-100 text-center fs-4 display-1 mb-1", "style" : "border: none; outline: none;"}))
 
 class ReservaForm(forms.ModelForm):
   class Meta:
